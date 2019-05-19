@@ -1,0 +1,9 @@
+com\tiket\flight\Application.class
+com\tiket\flight\rest\AirportServiceController.class
+com\tiket\flight\service\Publisher.class
+com\tiket\flight\document\Airport.class
+com\tiket\flight\config\MongoDBConfig.class
+com\tiket\flight\config\AirportSenderConfig.class
+com\tiket\flight\service\Subscriber.class
+com\tiket\flight\repo\AirportRepository.class
+com\tiket\flight\config\AirportListenerConfig.class
