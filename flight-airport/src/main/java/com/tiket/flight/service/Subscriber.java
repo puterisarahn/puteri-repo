@@ -10,7 +10,9 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import com.tiket.flight.document.Airport;
+import com.tiket.flight.document.AirportSubscriber;
 import com.tiket.flight.repo.AirportRepository;
+import com.tiket.flight.repo.AirportSubscriberRepository;
 
 @Service
 public class Subscriber {
@@ -23,10 +25,10 @@ public class Subscriber {
 		logger.info(String.format("$$ -> Consumed Message -> %s",message));
 	}
 */
-	private AirportRepository airportRepository;
+	private AirportSubscriberRepository airportSubscriberRepository;
 	
-	public Subscriber(AirportRepository airportRepository) {
-		this.airportRepository = airportRepository;
+	public Subscriber(AirportSubscriberRepository airportSubscriberRepository) {
+		this.airportSubscriberRepository = airportSubscriberRepository;
 	}
 	
 	  @KafkaListener(topics = "airport")
@@ -34,8 +36,14 @@ public class Subscriber {
 	    for(String key : messageHeaders.keySet()){
 	    	 if (key.equals("idAirport")){
 	    		 String value = messageHeaders.get(key).toString();
-	    		 data.set_id(new ObjectId(value));
-	    			 airportRepository.save(data);
+	    		 AirportSubscriber aFound = airportSubscriberRepository.findByAirportCode(data.getAirportCode());
+	    			if(aFound == null){
+	    				data.set_id(new ObjectId(value));
+	    			}else{
+	    				data.set_id(new ObjectId(aFound.get_id()));
+	    			}
+	    			AirportSubscriber aSub = new AirportSubscriber(new ObjectId(data.get_id()), data.getAirportName(),data.getAirportCode(), data.getCityCode(), data.getIsActive() );
+	    			 airportSubscriberRepository.save(aSub);
 	         }
 	    }
 	    
